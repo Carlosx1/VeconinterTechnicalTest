@@ -1,0 +1,257 @@
+@page "/blazor/clients"
+@using VeconinterTechnicalTest.Application.DTOs
+@using VeconinterTechnicalTest.Application.Services.Interfaces
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.JSInterop
+@attribute [Authorize]
+@inject IClientService ClientService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Clientes - Blazor</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-building"></i> Lista de Clientes (Blazor)</h2>
+    <button class="btn btn-success" @onclick="ShowCreateModal">
+        <i class="fas fa-plus"></i> Nuevo Cliente
+    </button>
+</div>
+
+@if (loading)
+{
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Cargando clientes...</p>
+    </div>
+}
+else if (clients == null || !clients.Any())
+{
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle"></i>
+        <h5>No hay clientes registrados</h5>
+        <p>Comienza agregando tu primer cliente.</p>
+        <button class="btn btn-primary" @onclick="ShowCreateModal">
+            <i class="fas fa-plus"></i> Crear Primer Cliente
+        </button>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var client in clients)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 client-card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-user"></i> @client.Name
+                        </h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-building"></i> @client.Company
+                            </small>
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-envelope text-muted"></i> @client.Email</li>
+                            <li><i class="fas fa-phone text-muted"></i> @client.Phone</li>
+                            <li><i class="fas fa-users text-muted"></i> @client.SubClients.Count SubClientes</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100">
+                            <button class="btn btn-outline-primary btn-sm" @onclick="() => ViewClient(client.Id)">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm" @onclick="() => EditClient(client)">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteClient(client)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@* Modal para crear/editar cliente *@
+<div class="modal fade @(showModal ? "show d-block" : "")" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    @(isEditing ? "Editar Cliente" : "Crear Cliente")
+                </h5>
+                <button type="button" class="btn-close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="currentClient" OnValidSubmit="SaveClient">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-danger" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <InputText @bind-Value="currentClient.Name" class="form-control" placeholder="Ej: Juan Pérez" />
+                        <ValidationMessage For="@(() => currentClient.Name)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Empresa</label>
+                        <InputText @bind-Value="currentClient.Company" class="form-control" placeholder="Ej: Tech Solutions SA" />
+                        <ValidationMessage For="@(() => currentClient.Company)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="currentClient.Email" type="email" class="form-control" placeholder="cliente@empresa.com" />
+                        <ValidationMessage For="@(() => currentClient.Email)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <InputText @bind-Value="currentClient.Phone" class="form-control" placeholder="+1234567890" />
+                        <ValidationMessage For="@(() => currentClient.Phone)" class="text-danger" />
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" disabled="@saving">
+                            @if (saving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .client-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 4px solid #007bff;
+    }
+    
+    .client-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+@code {
+    private List<ClientDto>? clients;
+    private ClientDto currentClient = new();
+    private bool loading = true;
+    private bool showModal = false;
+    private bool isEditing = false;
+    private bool saving = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadClients();
+    }
+
+    private async Task LoadClients()
+    {
+        loading = true;
+        try
+        {
+            clients = (await ClientService.GetAllClientsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error al cargar clientes: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void ShowCreateModal()
+    {
+        currentClient = new ClientDto();
+        isEditing = false;
+        showModal = true;
+    }
+
+    private void EditClient(ClientDto client)
+    {
+        currentClient = new ClientDto
+        {
+            Id = client.Id,
+            Name = client.Name,
+            Email = client.Email,
+            Phone = client.Phone,
+            Company = client.Company,
+            CreatedAt = client.CreatedAt,
+            UpdatedAt = client.UpdatedAt
+        };
+        isEditing = true;
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        currentClient = new();
+    }
+
+    private async Task SaveClient()
+    {
+        saving = true;
+        try
+        {
+            if (isEditing)
+            {
+                await ClientService.UpdateClientAsync(currentClient);
+                await JSRuntime.InvokeVoidAsync("alert", "Cliente actualizado exitosamente");
+            }
+            else
+            {
+                await ClientService.CreateClientAsync(currentClient);
+                await JSRuntime.InvokeVoidAsync("alert", "Cliente creado exitosamente");
+            }
+            
+            CloseModal();
+            await LoadClients();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private async Task DeleteClient(ClientDto client)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", $"¿Está seguro de eliminar el cliente '{client.Name}'?"))
+        {
+            try
+            {
+                await ClientService.DeleteClientAsync(client.Id);
+                await JSRuntime.InvokeVoidAsync("alert", "Cliente eliminado exitosamente");
+                await LoadClients();
+            }
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"Error al eliminar: {ex.Message}");
+            }
+        }
+    }
+
+    private void ViewClient(int clientId)
+    {
+        Navigation.NavigateTo($"/blazor/clients/{clientId}");
+    }
+}

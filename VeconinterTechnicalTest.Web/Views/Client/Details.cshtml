@@ -1,0 +1,105 @@
+@page
+@model VeconinterTechnicalTest.Application.DTOs.ClientDto
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+    var subClients = ViewBag.SubClients as IEnumerable<VeconinterTechnicalTest.Application.DTOs.SubClientDto> ?? new List<VeconinterTechnicalTest.Application.DTOs.SubClientDto>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user"></i> @Model.Name</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Información del Cliente</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Nombre:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+                    
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">
+                        <a href="mailto:@Model.Email">@Model.Email</a>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Teléfono:</dt>
+                    <dd class="col-sm-8">
+                        <a href="tel:@Model.Phone">@Model.Phone</a>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Empresa:</dt>
+                    <dd class="col-sm-8">@Model.Company</dd>
+                    
+                    <dt class="col-sm-4">Creado:</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                    
+                    <dt class="col-sm-4">Actualizado:</dt>
+                    <dd class="col-sm-8">@Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-user-friends"></i> SubClientes (@subClients.Count())</h5>
+                <a asp-controller="SubClient" asp-action="Create" asp-route-clientId="@Model.Id" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus"></i> Agregar
+                </a>
+            </div>
+            <div class="card-body">
+                @if (!subClients.Any())
+                {
+                    <div class="text-center text-muted">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <p>No hay subclientes registrados</p>
+                        <a asp-controller="SubClient" asp-action="Create" asp-route-clientId="@Model.Id" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus"></i> Agregar Primer SubCliente
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var subClient in subClients)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">@subClient.Name</h6>
+                                        <p class="mb-1 small">
+                                            <i class="fas fa-envelope text-muted"></i> @subClient.Email<br>
+                                            <i class="fas fa-phone text-muted"></i> @subClient.Phone
+                                        </p>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-controller="SubClient" asp-action="Edit" asp-route-id="@subClient.Id" class="btn btn-outline-warning" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-controller="SubClient" asp-action="Delete" asp-route-id="@subClient.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este subcliente?')">
+                                            <button type="submit" class="btn btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

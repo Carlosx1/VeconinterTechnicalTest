@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center">
+    <h1 class="display-4">
+        <i class="fas fa-users text-primary"></i> 
+        Bienvenido al Sistema de Gestión de Clientes
+    </h1>
+    <p class="lead">Administra y organiza la información de tus clientes de manera segura y eficiente.</p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-building fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Gestión de Clientes</h5>
+                <p class="card-text">Administra la información completa de tus clientes principales, incluyendo datos de contacto y empresa.</p>
+                <a asp-controller="Client" asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> Ver Clientes
+                </a>
+                <a asp-controller="Client" asp-action="Create" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Nuevo Cliente
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-user-friends fa-3x text-success mb-3"></i>
+                <h5 class="card-title">SubClientes</h5>
+                <p class="card-text">Cada cliente puede tener múltiples subclientes asociados para una gestión más detallada.</p>
+                <small class="text-muted">Los subclientes se gestionan desde la página de detalles de cada cliente.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Características del Sistema</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-shield-alt text-success"></i> Seguridad</h6>
+                        <ul class="small">
+                            <li>Autenticación basada en cookies</li>
+                            <li>Validación de datos</li>
+                            <li>Protección CSRF</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-cogs text-warning"></i> Arquitectura</h6>
+                        <ul class="small">
+                            <li>Arquitectura de Cebolla (Onion)</li>
+                            <li>Patrón Factory</li>
+                            <li>Patrón Strategy</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-database text-info"></i> Tecnología</h6>
+                        <ul class="small">
+                            <li>ASP.NET Core 8</li>
+                            <li>Entity Framework Core</li>
+                            <li>SQL Server</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

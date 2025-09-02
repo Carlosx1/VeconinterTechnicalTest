@@ -1,0 +1,395 @@
+@page "/blazor/clients/{ClientId:int}"
+@using VeconinterTechnicalTest.Application.Services.Interfaces
+@attribute [Authorize]
+@inject IClientService ClientService
+@inject ISubClientService SubClientService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Cliente - @(client?.Name ?? "Cargando...")</PageTitle>
+
+@if (loading)
+{
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Cargando información del cliente...</p>
+    </div>
+}
+else if (client == null)
+{
+    <div class="alert alert-warning">
+        <h4>Cliente no encontrado</h4>
+        <p>El cliente que está buscando no existe o ha sido eliminado.</p>
+        <button class="btn btn-primary" @onclick="@(() => Navigation.NavigateTo("/blazor/clients"))">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </button>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user"></i> @client.Name</h2>
+        <div>
+            <button class="btn btn-warning me-2" @onclick="() => EditClient(client)">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/blazor/clients"))">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Información del Cliente</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Nombre:</dt>
+                        <dd class="col-sm-8">@client.Name</dd>
+                        
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">
+                            <a href="mailto:@client.Email">@client.Email</a>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Teléfono:</dt>
+                        <dd class="col-sm-8">
+                            <a href="tel:@client.Phone">@client.Phone</a>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Empresa:</dt>
+                        <dd class="col-sm-8">@client.Company</dd>
+                        
+                        <dt class="col-sm-4">Creado:</dt>
+                        <dd class="col-sm-8">@client.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                        
+                        <dt class="col-sm-4">Actualizado:</dt>
+                        <dd class="col-sm-8">@client.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-user-friends"></i> SubClientes (@subClients.Count)</h5>
+                    <button class="btn btn-light btn-sm" @onclick="ShowCreateSubClientModal">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (!subClients.Any())
+                    {
+                        <div class="text-center text-muted">
+                            <i class="fas fa-users fa-2x mb-2"></i>
+                            <p>No hay subclientes registrados</p>
+                            <button class="btn btn-sm btn-success" @onclick="ShowCreateSubClientModal">
+                                <i class="fas fa-plus"></i> Agregar Primer SubCliente
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var subClient in subClients)
+                        {
+                            <div class="card mb-2">
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">@subClient.Name</h6>
+                                            <p class="mb-0 small text-muted">
+                                                <i class="fas fa-envelope"></i> @subClient.Email<br>
+                                                <i class="fas fa-phone"></i> @subClient.Phone
+                                            </p>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-warning" @onclick="() => EditSubClient(subClient)" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" @onclick="() => DeleteSubClient(subClient)" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@* Modal para editar cliente *@
+<div class="modal fade @(showClientModal ? "show d-block" : "")" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Cliente</h5>
+                <button type="button" class="btn-close" @onclick="CloseClientModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="currentClient" OnValidSubmit="SaveClient">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-danger" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <InputText @bind-value="currentClient.Name" class="form-control" />
+                        <ValidationMessage For="@(() => currentClient.Name)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Empresa</label>
+                        <InputText @bind-Value="currentClient.Company" class="form-control" />
+                        <ValidationMessage For="@(() => currentClient.Company)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="currentClient.Email" type="email" class="form-control" />
+                        <ValidationMessage For="@(() => currentClient.Email)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <InputText @bind-Value="currentClient.Phone" class="form-control" />
+                        <ValidationMessage For="@(() => currentClient.Phone)" class="text-danger" />
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseClientModal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" disabled="@saving">
+                            @if (saving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para crear/editar subcliente *@
+<div class="modal fade @(showSubClientModal ? "show d-block" : "")" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    @(isEditingSubClient ? "Editar SubCliente" : "Crear SubCliente")
+                </h5>
+                <button type="button" class="btn-close" @onclick="CloseSubClientModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="currentSubClient" OnValidSubmit="SaveSubClient">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-danger" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <InputText @bind-Value="currentSubClient.Name" class="form-control" placeholder="Ej: María González" />
+                        <ValidationMessage For="@(() => currentSubClient.Name)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="currentSubClient.Email" type="email" class="form-control" placeholder="subcliente@empresa.com" />
+                        <ValidationMessage For="@(() => currentSubClient.Email)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <InputText @bind-Value="currentSubClient.Phone" class="form-control" placeholder="+1234567890" />
+                        <ValidationMessage For="@(() => currentSubClient.Phone)" class="text-danger" />
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseSubClientModal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" disabled="@saving">
+                            @if (saving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int ClientId { get; set; }
+    
+    private ClientDto? client;
+    private List<SubClientDto> subClients = new();
+    private ClientDto currentClient = new();
+    private SubClientDto currentSubClient = new();
+    private bool loading = true;
+    private bool showClientModal = false;
+    private bool showSubClientModal = false;
+    private bool isEditingSubClient = false;
+    private bool saving = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadClient();
+        await LoadSubClients();
+    }
+
+    private async Task LoadClient()
+    {
+        loading = true;
+        try
+        {
+            client = await ClientService.GetClientByIdAsync(ClientId);
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error al cargar cliente: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task LoadSubClients()
+    {
+        try
+        {
+            subClients = (await SubClientService.GetSubClientsByClientIdAsync(ClientId)).ToList();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error al cargar subclientes: {ex.Message}");
+        }
+    }
+
+    private void EditClient(ClientDto clientToEdit)
+    {
+        currentClient = new ClientDto
+        {
+            Id = clientToEdit.Id,
+            Name = clientToEdit.Name,
+            Email = clientToEdit.Email,
+            Phone = clientToEdit.Phone,
+            Company = clientToEdit.Company,
+            CreatedAt = clientToEdit.CreatedAt,
+            UpdatedAt = clientToEdit.UpdatedAt
+        };
+        showClientModal = true;
+    }
+
+    private void CloseClientModal()
+    {
+        showClientModal = false;
+        currentClient = new();
+    }
+
+    private async Task SaveClient()
+    {
+        saving = true;
+        try
+        {
+            await ClientService.UpdateClientAsync(currentClient);
+            await JSRuntime.InvokeVoidAsync("alert", "Cliente actualizado exitosamente");
+            CloseClientModal();
+            await LoadClient();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private void ShowCreateSubClientModal()
+    {
+        currentSubClient = new SubClientDto { ClientId = ClientId };
+        isEditingSubClient = false;
+        showSubClientModal = true;
+    }
+
+    private void EditSubClient(SubClientDto subClient)
+    {
+        currentSubClient = new SubClientDto
+        {
+            Id = subClient.Id,
+            Name = subClient.Name,
+            Email = subClient.Email,
+            Phone = subClient.Phone,
+            ClientId = subClient.ClientId,
+            CreatedAt = subClient.CreatedAt,
+            UpdatedAt = subClient.UpdatedAt
+        };
+        isEditingSubClient = true;
+        showSubClientModal = true;
+    }
+
+    private void CloseSubClientModal()
+    {
+        showSubClientModal = false;
+        currentSubClient = new();
+    }
+
+    private async Task SaveSubClient()
+    {
+        saving = true;
+        try
+        {
+            if (isEditingSubClient)
+            {
+                await SubClientService.UpdateSubClientAsync(currentSubClient);
+                await JSRuntime.InvokeVoidAsync("alert", "SubCliente actualizado exitosamente");
+            }
+            else
+            {
+                await SubClientService.CreateSubClientAsync(currentSubClient);
+                await JSRuntime.InvokeVoidAsync("alert", "SubCliente creado exitosamente");
+            }
+            
+            CloseSubClientModal();
+            await LoadSubClients();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    private async Task DeleteSubClient(SubClientDto subClient)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", $"¿Está seguro de eliminar el subcliente '{subClient.Name}'?"))
+        {
+            try
+            {
+                await SubClientService.DeleteSubClientAsync(subClient.Id);
+                await JSRuntime.InvokeVoidAsync("alert", "SubCliente eliminado exitosamente");
+                await LoadSubClients();
+            }
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"Error al eliminar: {ex.Message}");
+            }
+        }
+    }
+}
