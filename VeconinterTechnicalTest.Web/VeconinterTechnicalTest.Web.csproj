@@ -40,7 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\lib\font-awesome\4.7.0\" />
       <Folder Include="wwwroot\lib\font-awesome\6.7.2\" />
     </ItemGroup>
 
