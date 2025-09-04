@@ -39,4 +39,26 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\lib\font-awesome\4.7.0\" />
+      <Folder Include="wwwroot\lib\font-awesome\6.7.2\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\animated.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\bordered-pulled.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\core.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\fixed-width.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\font-awesome.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\icons.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\larger.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\list.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\mixins.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\path.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\rotated-flipped.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\screen-reader.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\stacked.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\font-awesome\4.7.0\less\variables.less" />
+    </ItemGroup>
+
 </Project>

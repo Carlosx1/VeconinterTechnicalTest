@@ -1,18 +1,37 @@
-Web.Components.Pages
+@* @page "/_Host" *@
+@* @namespace VeconinterTechnicalTest.Web.Pages *@
+@* @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers *@
+@* @{ *@
+@*     Layout = "_Layout"; *@
+@* } *@
+@* *@
+@* <component type="typeof(Components.App)" render-mode="ServerPrerendered" /> *@
+@* *@
+@* <div id="blazor-error-ui"> *@
+@*     <environment include="Staging,Production"> *@
+@*         Ha ocurrido un error. Esta aplicación podría no responder hasta que se recargue. *@
+@*     </environment> *@
+@*     <environment include="Development"> *@
+@*         Ha ocurrido una excepción no controlada. Consulta los registros del navegador para obtener más detalles. *@
+@*     </environment> *@
+@*     <a href="" class="reload">Recargar</a> *@
+@*     <a class="dismiss">🗙</a> *@
+@* </div> *@
+
+@page "/_Host"
+@namespace VeconinterTechnicalTest.Web.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@{
-    Layout = "_Layout";
-}
-
-<component type="typeof(VeconinterTechnicalTest.Web.Components.App)" render-mode="ServerPrerendered" />
-
-<div id="blazor-error-ui">
-    <environment include="Staging,Production">
-        Ha ocurrido un error. Esta aplicación podría no responder hasta que se recargue.
-    </environment>
-    <environment include="Development">
-        Ha ocurrido una excepción no controlada. Consulta los registros del navegador para obtener más detalles.
-    </environment>
-    <a href="" class="reload">Recargar</a>
-    <a class="dismiss">🗙</a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Veconinter Technical Test</title>
+    <base href="~/" />
+</head>
+<body>
+<app>
+    <component type="typeof(Components.App)" render-mode="ServerPrerendered" />
+</app>
+<script src="_framework/blazor.server.js"></script>
+</body>
+</html>

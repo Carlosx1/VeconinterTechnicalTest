@@ -23,20 +23,20 @@ else if (client == null)
         <h4>Cliente no encontrado</h4>
         <p>El cliente que está buscando no existe o ha sido eliminado.</p>
         <button class="btn btn-primary" @onclick="@(() => Navigation.NavigateTo("/blazor/clients"))">
-            <i class="fas fa-arrow-left"></i> Volver a la lista
+            <i class="fa fa-arrow-left"></i> Volver a la lista
         </button>
     </div>
 }
 else
 {
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-user"></i> @client.Name</h2>
+        <h2><i class="fa fa-user"></i> @client.Name</h2>
         <div>
             <button class="btn btn-warning me-2" @onclick="() => EditClient(client)">
-                <i class="fas fa-edit"></i> Editar
+                <i class="fa fa-edit"></i> Editar
             </button>
             <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/blazor/clients"))">
-                <i class="fas fa-arrow-left"></i> Volver
+                <i class="fa fa-arrow-left"></i> Volver
             </button>
         </div>
     </div>
@@ -45,7 +45,7 @@ else
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Información del Cliente</h5>
+                    <h5 class="mb-0"><i class="fa fa-info-circle"></i> Información del Cliente</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row">
@@ -78,19 +78,19 @@ else
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-user-friends"></i> SubClientes (@subClients.Count)</h5>
+                    <h5 class="mb-0"><i class="fa fa-user-friends"></i> SubClientes (@subClients.Count)</h5>
                     <button class="btn btn-light btn-sm" @onclick="ShowCreateSubClientModal">
-                        <i class="fas fa-plus"></i> Agregar
+                        <i class="fa fa-plus"></i> Agregar
                     </button>
                 </div>
                 <div class="card-body">
                     @if (!subClients.Any())
                     {
                         <div class="text-center text-muted">
-                            <i class="fas fa-users fa-2x mb-2"></i>
+                            <i class="fa fa-users fa-2x mb-2"></i>
                             <p>No hay subclientes registrados</p>
                             <button class="btn btn-sm btn-success" @onclick="ShowCreateSubClientModal">
-                                <i class="fas fa-plus"></i> Agregar Primer SubCliente
+                                <i class="fa fa-plus"></i> Agregar Primer SubCliente
                             </button>
                         </div>
                     }
@@ -104,16 +104,16 @@ else
                                         <div>
                                             <h6 class="mb-1">@subClient.Name</h6>
                                             <p class="mb-0 small text-muted">
-                                                <i class="fas fa-envelope"></i> @subClient.Email<br>
-                                                <i class="fas fa-phone"></i> @subClient.Phone
+                                                <i class="fa fa-envelope"></i> @subClient.Email<br>
+                                                <i class="fa fa-phone"></i> @subClient.Phone
                                             </p>
                                         </div>
                                         <div class="btn-group btn-group-sm">
                                             <button class="btn btn-outline-warning" @onclick="() => EditSubClient(subClient)" title="Editar">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fa fa-edit"></i>
                                             </button>
                                             <button class="btn btn-outline-danger" @onclick="() => DeleteSubClient(subClient)" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fa fa-trash"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -171,7 +171,7 @@ else
                             {
                                 <span class="spinner-border spinner-border-sm me-2"></span>
                             }
-                            <i class="fas fa-save"></i> Guardar
+                            <i class="fa fa-save"></i> Guardar
                         </button>
                     </div>
                 </EditForm>
@@ -220,7 +220,7 @@ else
                             {
                                 <span class="spinner-border spinner-border-sm me-2"></span>
                             }
-                            <i class="fas fa-save"></i> Guardar
+                            <i class="fa fa-save"></i> Guardar
                         </button>
                     </div>
                 </EditForm>

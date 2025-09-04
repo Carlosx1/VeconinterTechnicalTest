@@ -31,7 +31,7 @@ public class ClientController : Controller
         if (client == null)
             return NotFound();
 
-        var subClients = await _subClientService.GetSubClientsByClientIdAsync(id);
+        var subClients = await _subClientService.GetSubClientsByClientIdAsync(id)  ?? new List<SubClientDto>();
         ViewBag.SubClients = subClients;
 
         return View(client);

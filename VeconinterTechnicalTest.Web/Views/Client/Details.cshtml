@@ -1,18 +1,22 @@
-@page
 @model VeconinterTechnicalTest.Application.DTOs.ClientDto
 @{
     ViewData["Title"] = "Detalles del Cliente";
-    var subClients = ViewBag.SubClients as IEnumerable<VeconinterTechnicalTest.Application.DTOs.SubClientDto> ?? new List<VeconinterTechnicalTest.Application.DTOs.SubClientDto>();
+    IEnumerable<SubClientDto> subClients = new List<SubClientDto>();;
+    if (ViewBag.SubClients != null)
+    {
+        subClients = ViewBag.SubClients as IEnumerable<SubClientDto>;
+    }
+    // var subClients = ViewBag.SubClients as IEnumerable<SubClientDto> ?? new List<SubClientDto>();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-user"></i> @Model.Name</h2>
+    <h2><i class="fa fa-user"></i> @Model.Name</h2>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-            <i class="fas fa-edit"></i> Editar
+            <i class="fa fa-edit"></i> Editar
         </a>
         <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Volver
+            <i class="fa fa-arrow-left"></i> Volver
         </a>
     </div>
 </div>
@@ -21,7 +25,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Información del Cliente</h5>
+                <h5 class="mb-0"><i class="fa fa-info-circle"></i> Información del Cliente</h5>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -54,19 +58,19 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-user-friends"></i> SubClientes (@subClients.Count())</h5>
+                <h5 class="mb-0"><i class="fa fa-user-friends"></i> SubClientes (@subClients.Count())</h5>
                 <a asp-controller="SubClient" asp-action="Create" asp-route-clientId="@Model.Id" class="btn btn-light btn-sm">
-                    <i class="fas fa-plus"></i> Agregar
+                    <i class="fa fa-plus"></i> Agregar
                 </a>
             </div>
             <div class="card-body">
                 @if (!subClients.Any())
                 {
                     <div class="text-center text-muted">
-                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <i class="fa fa-users fa-2x mb-2"></i>
                         <p>No hay subclientes registrados</p>
                         <a asp-controller="SubClient" asp-action="Create" asp-route-clientId="@Model.Id" class="btn btn-sm btn-success">
-                            <i class="fas fa-plus"></i> Agregar Primer SubCliente
+                            <i class="fa fa-plus"></i> Agregar Primer SubCliente
                         </a>
                     </div>
                 }
@@ -80,17 +84,17 @@
                                     <div>
                                         <h6 class="mb-1">@subClient.Name</h6>
                                         <p class="mb-1 small">
-                                            <i class="fas fa-envelope text-muted"></i> @subClient.Email<br>
-                                            <i class="fas fa-phone text-muted"></i> @subClient.Phone
+                                            <i class="fa fa-envelope text-muted"></i> @subClient.Email<br>
+                                            <i class="fa fa-phone text-muted"></i> @subClient.Phone
                                         </p>
                                     </div>
                                     <div class="btn-group btn-group-sm">
                                         <a asp-controller="SubClient" asp-action="Edit" asp-route-id="@subClient.Id" class="btn btn-outline-warning" title="Editar">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fa fa-edit"></i>
                                         </a>
                                         <form asp-controller="SubClient" asp-action="Delete" asp-route-id="@subClient.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este subcliente?')">
                                             <button type="submit" class="btn btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>

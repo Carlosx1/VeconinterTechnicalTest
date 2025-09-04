@@ -1,5 +1,6 @@
 using AutoMapper;
 using VeconinterTechnicalTest.Application.DTOs;
+using VeconinterTechnicalTest.Application.Enums;
 using VeconinterTechnicalTest.Application.Factories;
 using VeconinterTechnicalTest.Application.Services.Interfaces;
 using VeconinterTechnicalTest.Domain.Interfaces;
@@ -11,21 +12,18 @@ public class ClientService : IClientService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IClientFactory _clientFactory;
-    private readonly IValidationStrategy<string> _emailValidation;
-    private readonly IValidationStrategy<string> _phoneValidation;
+    private readonly Dictionary<ValidationStrategyEnum, IValidationStrategy<string>> _validationStrategies;
 
     public ClientService(
         IUnitOfWork unitOfWork, 
         IMapper mapper, 
         IClientFactory clientFactory,
-        IValidationStrategy<string> emailValidation, 
-        IValidationStrategy<string> phoneValidation)
+        IEnumerable<IValidationStrategy<string>> validationStrategies)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _clientFactory = clientFactory;
-        _emailValidation = emailValidation;
-        _phoneValidation = phoneValidation;
+        _validationStrategies = validationStrategies.ToDictionary(v => v.GetValidationStrategy(), v => v);
     }
 
 
@@ -46,11 +44,11 @@ public class ClientService : IClientService
     public async Task<ClientDto> CreateClientAsync(ClientDto clientDto)
     {
         // Validación usando Strategy Pattern
-        if (!_emailValidation.IsValid(clientDto.Email))
-            throw new ArgumentException(_emailValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Email].IsValid(clientDto.Email))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Email].GetValidationMessage());
                 
-        if (!_phoneValidation.IsValid(clientDto.Phone))
-            throw new ArgumentException(_phoneValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Phone].IsValid(clientDto.Phone))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Phone].GetValidationMessage());
             
         // Creación usando Factory Pattern
         var client = _clientFactory.CreateClient(clientDto);
@@ -68,11 +66,11 @@ public class ClientService : IClientService
             throw new ArgumentException("Cliente no encontrado");
             
         // Validación usando Strategy Pattern
-        if (!_emailValidation.IsValid(clientDto.Email))
-            throw new ArgumentException(_emailValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Email].IsValid(clientDto.Email))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Email].GetValidationMessage());
                 
-        if (!_phoneValidation.IsValid(clientDto.Phone))
-            throw new ArgumentException(_phoneValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Phone].IsValid(clientDto.Phone))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Phone].GetValidationMessage());
             
         existingClient.UpdateInfo(clientDto.Name, clientDto.Email, clientDto.Phone, clientDto.Company);
             

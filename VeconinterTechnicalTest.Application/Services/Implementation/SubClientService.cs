@@ -1,5 +1,6 @@
 using AutoMapper;
 using VeconinterTechnicalTest.Application.DTOs;
+using VeconinterTechnicalTest.Application.Enums;
 using VeconinterTechnicalTest.Application.Factories;
 using VeconinterTechnicalTest.Application.Services.Interfaces;
 using VeconinterTechnicalTest.Domain.Interfaces;
@@ -11,21 +12,18 @@ public class SubClientService : ISubClientService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IClientFactory _clientFactory;
-    private readonly IValidationStrategy<string> _emailValidation;
-    private readonly IValidationStrategy<string> _phoneValidation;
+    private readonly Dictionary<ValidationStrategyEnum, IValidationStrategy<string>> _validationStrategies;
     
     public SubClientService(
         IUnitOfWork unitOfWork, 
         IMapper mapper, 
         IClientFactory clientFactory,
-        IValidationStrategy<string> emailValidation, 
-        IValidationStrategy<string> phoneValidation)
+        IEnumerable<IValidationStrategy<string>> validationStrategies)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _clientFactory = clientFactory;
-        _emailValidation = emailValidation;
-        _phoneValidation = phoneValidation;
+        _validationStrategies = validationStrategies.ToDictionary(v => v.GetValidationStrategy(), v => v);
     }
     public async Task<IEnumerable<SubClientDto>> GetSubClientsByClientIdAsync(int clientId)
     {
@@ -42,11 +40,11 @@ public class SubClientService : ISubClientService
     public async Task<SubClientDto> CreateSubClientAsync(SubClientDto subClientDto)
     {
         // Validación usando Strategy Pattern
-        if (!_emailValidation.IsValid(subClientDto.Email))
-            throw new ArgumentException(_emailValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Email].IsValid(subClientDto.Email))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Email].GetValidationMessage());
                 
-        if (!_phoneValidation.IsValid(subClientDto.Phone))
-            throw new ArgumentException(_phoneValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Phone].IsValid(subClientDto.Phone))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Phone].GetValidationMessage());
             
         // Creación usando Factory Pattern
         var subClient = _clientFactory.CreateSubClient(subClientDto);
@@ -64,11 +62,11 @@ public class SubClientService : ISubClientService
             throw new ArgumentException("SubCliente no encontrado");
             
         // Validación usando Strategy Pattern
-        if (!_emailValidation.IsValid(subClientDto.Email))
-            throw new ArgumentException(_emailValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Email].IsValid(subClientDto.Email))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Email].GetValidationMessage());
                 
-        if (!_phoneValidation.IsValid(subClientDto.Phone))
-            throw new ArgumentException(_phoneValidation.GetValidationMessage());
+        if (!_validationStrategies[ValidationStrategyEnum.Phone].IsValid(subClientDto.Phone))
+            throw new ArgumentException(_validationStrategies[ValidationStrategyEnum.Phone].GetValidationMessage());
             
         existingSubClient.UpdateInfo(subClientDto.Name, subClientDto.Email, subClientDto.Phone);
             

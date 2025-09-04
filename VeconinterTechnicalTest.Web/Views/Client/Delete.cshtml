@@ -1,10 +1,9 @@
-@page
 @model VeconinterTechnicalTest.Application.DTOs.ClientDto
 @{
     ViewData["Title"] = "Eliminar Cliente";
 }
 
-<h2 class="text-danger"><i class="fas fa-exclamation-triangle"></i> Eliminar Cliente</h2>
+<h2 class="text-danger"><i class="fa fa-exclamation-triangle"></i> Eliminar Cliente</h2>
 
 <div class="alert alert-danger">
     <strong>¿Está seguro que desea eliminar este cliente?</strong>
@@ -41,10 +40,10 @@
                 <form asp-action="Delete" method="post" class="mt-4">
                     <input asp-for="Id" type="hidden" />
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Confirmar Eliminación
+                        <i class="fa fa-trash"></i> Confirmar Eliminación
                     </button>
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Cancelar
+                        <i class="fa fa-arrow-left"></i> Cancelar
                     </a>
                 </form>
             </div>

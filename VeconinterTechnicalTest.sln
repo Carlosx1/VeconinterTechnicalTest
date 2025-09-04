@@ -5,6 +5,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6DEDAB96-AD49-4527-BE19-2C4CFFA71780}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
+		.env = .env
+		.env.example = .env.example
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VeconinterTechnicalTest.Domain", "VeconinterTechnicalTest.Domain\VeconinterTechnicalTest.Domain.csproj", "{60693CD8-F9E4-43F0-88BD-52BEFD995A5C}"

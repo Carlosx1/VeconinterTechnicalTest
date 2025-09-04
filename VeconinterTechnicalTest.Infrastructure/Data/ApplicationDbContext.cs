@@ -34,7 +34,7 @@ public class ApplicationDbContext : DbContext
                 Id = 1,
                 Username = "admin",
                 Email = "admin@company.com",
-                PasswordHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", // "admin123"
+                PasswordHash = "notrfk5VJ0MXy99PcSRl3mM4dO+LyK5sakfF5XiD9yE=", // "admin123"
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             }

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using VeconinterTechnicalTest.Application.Enums;
 using VeconinterTechnicalTest.Application.Services.Interfaces;
 
 namespace VeconinterTechnicalTest.Application.Services.Implementation;
@@ -19,5 +20,10 @@ public class PhoneValidationStrategy : IValidationStrategy<string>
     public string GetValidationMessage()
     {
         return "El formato del teléfono no es válido (8-15 dígitos)";
+    }
+    
+    public ValidationStrategyEnum GetValidationStrategy()
+    {
+        return ValidationStrategyEnum.Phone;
     }
 }

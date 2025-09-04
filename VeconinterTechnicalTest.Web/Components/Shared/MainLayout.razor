@@ -12,17 +12,17 @@
             <AuthorizeView>
                 <Authorized>
                     <span class="text-light">
-                        <i class="fas fa-user"></i> @context.User.Identity?.Name
+                        <i class="fa fa-user"></i> @context.User.Identity?.Name
                     </span>
                     <form action="/Auth/Logout" method="post" class="d-inline ms-2">
                         <button type="submit" class="btn btn-outline-light btn-sm">
-                            <i class="fas fa-sign-out-alt"></i> Salir
+                            <i class="fa fa-sign-out-alt"></i> Salir
                         </button>
                     </form>
                 </Authorized>
                 <NotAuthorized>
                     <a href="/Auth/Login" class="text-light">
-                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
                     </a>
                 </NotAuthorized>
             </AuthorizeView>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using VeconinterTechnicalTest.Infrastructure;
 using VeconinterTechnicalTest.Infrastructure.Data;
+using VeconinterTechnicalTest.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 // Blazor Server
 builder.Services.AddServerSideBlazor();
@@ -43,6 +45,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Rutas Blazor 
+// app.MapRazorComponents<App>()
+//     .AddInteractiveServerRenderMode();
+// app.MapBlazorHub();
+// app.MapFallbackToPage("/_Host");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -50,10 +58,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// Rutas Blazor
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
 
 // Crear base de datos si no existe
 using (var scope = app.Services.CreateScope())

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gestión de Clientes</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -12,7 +13,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-users"></i> Gestión de Clientes
+                    <i class="fa fa-users"></i> Gestión de Clientes
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -21,12 +22,12 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i> Inicio
+                                <i class="fa fa-home" aria-hidden="true"></i> Inicio
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Client" asp-action="Index">
-                                <i class="fas fa-building"></i> Clientes
+                                <i class="fa fa-building"></i> Clientes
                             </a>
                         </li>
                     </ul>
@@ -35,13 +36,13 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user"></i> @User.Identity.Name
+                                    <i class="fa fa-user"></i> @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                                             <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                                <i class="fa fa-sign-out-alt"></i> Cerrar Sesión
                                             </button>
                                         </form>
                                     </li>
@@ -52,7 +53,7 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Auth" asp-action="Login">
-                                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                                    <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
                                 </a>
                             </li>
                         }
@@ -67,7 +68,7 @@
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                    <i class="fa fa-check-circle"></i> @TempData["SuccessMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
@@ -75,7 +76,7 @@
             @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                    <i class="fa fa-exclamation-circle"></i> @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }

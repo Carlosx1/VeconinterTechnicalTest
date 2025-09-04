@@ -4,15 +4,14 @@ services:
   clientmanagement-web:
     build:
       context: .
-      dockerfile: ClientManagement.Web/Dockerfile
+      dockerfile: VeconinterTechnicalTest.Web/Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"
     depends_on:
       - sqlserver
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ClientManagementDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
+    env_file:
+      - .env
     networks:
       - clientmanagement-network
 
