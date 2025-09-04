@@ -1,14 +1,15 @@
 # VeconinterTechnicalTest 🚀
-Este proyecto es una aplicación de gestión de clientes y subclientes construida con ASP.NET Core 8. Presenta una arquitectura de cebolla (Onion Architecture) y combina dos interfaces de usuario: una tradicional con ASP.NET Core MVC y Blazor Server.   
+Este proyecto es una aplicación de gestión de clientes y subclientes construida con ASP.NET Core 8. Presenta una arquitectura de cebolla (Onion Architecture) y combina dos interfaces de usuario: una tradicional con ASP.NET Core MVC.
 
 ## Estructura del Proyecto
 
 ```
 VeconinterTechnicalTest/
 ├── VeconinterTechnicalTest.sln
-├── docker-compose.yml
+├── compose.yml
 ├── README.md
 ├── .gitignore
+├── .env.example
 │
 ├── VeconinterTechnicalTest.Domain/
 │   ├── VeconinterTechnicalTest.Domain.csproj
@@ -59,6 +60,8 @@ VeconinterTechnicalTest/
 │   │   │   ├── SubClientConfiguration.cs
 │   │   │   └── UserConfiguration.cs
 │   │   └── Migrations/
+│   │       ├── 20250904092802_Initial.cs
+│   │       └── ApplicationDbContextModelSnapshot.cs
 │   ├── Repositories/
 │   │   ├── BaseRepository.cs
 │   │   ├── ClientRepository.cs
@@ -67,57 +70,49 @@ VeconinterTechnicalTest/
 │   │   └── UnitOfWork.cs
 │   └── DependencyInjection.cs
 │
-└── VeconinterTechnicalTest.Web/
-├── VeconinterTechnicalTest.Web.csproj
-├── Program.cs
-├── appsettings.json
-├── appsettings.Development.json
-├── Dockerfile
-├── Controllers/
-│   ├── HomeController.cs
-│   ├── AuthController.cs
-│   ├── ClientController.cs
-│   └── SubClientController.cs
-├── Views/
-│   ├── _ViewImports.cshtml
-│   ├── _ViewStart.cshtml
-│   ├── Shared/
-│   │   ├── _Layout.cshtml
-│   │   ├── _ValidationScriptsPartial.cshtml
-│   │   └── Error.cshtml
-│   ├── Home/
-│   │   ├── Index.cshtml
-│   │   └── Privacy.cshtml
-│   ├── Auth/
-│   │   └── Login.cshtml
-│   ├── Client/
-│   │   ├── Index.cshtml
-│   │   ├── Details.cshtml
-│   │   ├── Create.cshtml
-│   │   ├── Edit.cshtml
-│   │   └── Delete.cshtml
-│   └── SubClient/
-│       ├── Create.cshtml
-│       └── Edit.cshtml
-├── Components/
-│   ├── App.razor
-│   ├── Routes.razor
-│   ├── Pages/
-│   │   ├── _Host.cshtml
-│   │   ├── Index.razor
-│   │   └── Clients/
-│   │       ├── ClientList.razor
-│   │       └── ClientDetail.razor
-│   └── Shared/
-│       ├── MainLayout.razor
-│       ├── NavMenu.razor
-│       └── _Imports.razor
+├── VeconinterTechnicalTest.Web/
+│   ├── VeconinterTechnicalTest.Web.csproj
+│   ├── Program.cs
+│   ├── appsettings.json
+│   ├── appsettings.Development.json
+│   ├── Dockerfile
+│   ├── Controllers/
+│   │   ├── HomeController.cs
+│   │   ├── AuthController.cs
+│   │   ├── ClientController.cs
+│   │   └── SubClientController.cs
+│   ├── Views/
+│   │   ├── _ViewImports.cshtml
+│   │   ├── _ViewStart.cshtml
+│   │   ├── Shared/
+│   │   │   ├── _Layout.cshtml
+│   │   │   ├── _ValidationScriptsPartial.cshtml
+│   │   │   └── Error.cshtml
+│   │   ├── Home/
+│   │   │   ├── Index.cshtml
+│   │   │   └── Privacy.cshtml
+│   │   ├── Auth/
+│   │   │   └── Login.cshtml
+│   │   ├── Client/
+│   │   │   ├── Index.cshtml
+│   │   │   ├── Details.cshtml
+│   │   │   ├── Create.cshtml
+│   │   │   ├── Edit.cshtml
+│   │   │   └── Delete.cshtml
+│   │   └── SubClient/
+│   │       ├── Create.cshtml
+│   │       └── Edit.cshtml
 └── wwwroot/
-├── css/
-│   └── site.css
-├── js/
-│   └── site.js
-└── favicon.ico
+    ├── css/
+    │   └── site.css
+    ├── js/
+    │   └── site.js
+    ├── lib/
+    │   ├── bootstrap/
+    │   ├── jquery/
+    │   ├── jquery-validation/
+    │   └── font-awesome/
+    └── favicon.ico
 ```
 ## Requisitos
 
@@ -150,7 +145,7 @@ VeconinterTechnicalTest/
 
 ## Ejecución de la Aplicación
 
-- Backend:
+Para ejecutar la aplicación, usa el siguiente comando en la raíz del proyecto:
 ```bash
   dotnet run --project VeconinterTechnicalTest.Web
 ```
@@ -164,12 +159,14 @@ VeconinterTechnicalTest/
 ## Funcionalidades
 
 ### MVC (Razor)
-- `/Home/Index` - Página principal
+- `/` - Página principal
 - `/Auth/Login` - Iniciar sesión
 - `/Client` - Lista de clientes
 - `/Client/Create` - Crear cliente
-- `/Client/{id}/Details` - Detalles del cliente
-- `/SubClient/Create/{clientId}` - Crear subcliente
+- `/Client/Details/{id}` - Detalles del cliente
+- `/Client/Edit/{id}` - Editar del cliente
+- `/SubClient/Create?clientId={clientId}` - Crear subcliente
+- `/SubClient/Edit/{subClientId}` - Crear subcliente
 
 ## Características Implementadas
 
@@ -180,7 +177,7 @@ VeconinterTechnicalTest/
 - Entity Framework Core + SQL Server
 - AutoMapper para mapeo de DTOs
 - Validación de datos
-- Interfaces MVC y Blazor Server
+- Interfaces MVC
 - Contenedorización con Docker
 
 ## Patrones de Diseño
@@ -201,6 +198,9 @@ VeconinterTechnicalTest/
 - Autorización en controladores y componentes
 
 ## Docker
+El proyecto incluye un `Dockerfile` y un `docker-compose.yml` para facilitar la contenedorización y despliegue.
+
+Para construir y ejecutar la aplicación con Docker y Docker Compose sigue estos pasos:
 - Construir imagen:
 ```bash
   docker build -t clientmanagement-web -f VeconinterTechnicalTest.Web/Dockerfile .
@@ -209,3 +209,6 @@ VeconinterTechnicalTest/
 ```bash
   docker-compose up
 ```
+
+### Importante:
+Para ejecutar el proyecto con Docker, asegúrate de que las variables de entorno en el archivo `.env` estén correctamente configuradas, especialmente la cadena de conexión a la base de datos.

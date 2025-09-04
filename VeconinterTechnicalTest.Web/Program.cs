@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using VeconinterTechnicalTest.Infrastructure;
 using VeconinterTechnicalTest.Infrastructure.Data;
-using VeconinterTechnicalTest.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
